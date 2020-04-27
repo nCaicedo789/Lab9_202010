@@ -1,7 +1,7 @@
 import config
 from DataStructures import edge as e
 from DataStructures import listiterator as it
-from DataStructures import mapMinPQ as mapq
+from ADT import indexminpq as minpq
 from ADT import map as map
 from ADT import graph as g
 from ADT import stack as stk
@@ -13,20 +13,30 @@ def comparenames (searchname, element):
 
 def newDijkstra(graph, s):
     """
-    Crea una busqueda Dijkstra para un digrafo y un vertice origen s
+    Crea una busqueda Dijkstra para un digrafo y un vertice origen
     """
     prime = nextPrime (g.numVertex(graph) * 2)
-    search = {'graph':graph, 's':s, 'visitedMap':None, 'mapq':None}
+    search = {'graph':graph, 's':s, 'visitedMap':None, 'minpq':None}
     search['visitedMap'] = map.newMap(numelements=prime, maptype='PROBING', comparefunction=graph['comparefunction'])
+    vertices = g.vertices (graph)
+    itvertices = it.newIterator (vertices)
+    while (it.hasNext (itvertices)):
+        vert =  it.next (itvertices)
+        map.put (search['visitedMap'], vert, {'marked':False,'edgeTo':None,'distTo':math.inf})
     map.put(search['visitedMap'], s, {'marked':True,'edgeTo':None,'distTo':0})
-    pq = mapq.newMapMinPQ(g.numVertex(graph), comparenames)
-    search['mapq'] = pq
-    mapq.insert(search['mapq'], s, 0)
-    while not mapq.isEmpty(search['mapq']):
-        pass
-        # Obtain the min vertex v from mapq
-        # For each v's adjacent edge e
-        #   relax e
+    pq = minpq.newIndexMinPQ(g.numVertex(graph), comparenames)
+    search['minpq'] = pq
+    minpq.insert(search['minpq'], s, 0)
+    while not minpq.isEmpty(search['minpq']):
+        v = minpq.delMin(pq)
+        if not g.containsVertex(graph,v):
+            raise Exception("Vertex ["+v+"] is not in the graph")
+        edges = g.adjacentEdges(graph, v)
+        if edges != None:
+            edges_iter = it.newIterator (edges)
+            while (it.hasNext(edges_iter)):
+                edge = it.next (edges_iter)
+                relax(search, edge)
     return search
 
 
@@ -36,23 +46,24 @@ def relax(search, edge):
     visited_v = map.get(search['visitedMap'], v)['value']
     visited_w = map.get(search['visitedMap'], w)
     if visited_w is None or (visited_w['value']['distTo'] > visited_v['distTo'] + e.weight(edge)):
-        pass
-        # Record w's dist as v's dist + edge's weight
-        # Record edge as w's predecesor
-        # If w in mapq
-        #   decrease priority of w in pq
-        # Else
-        #   insert w, dist in mapq
-
+        distToW = visited_v['distTo'] + e.weight(edge)
+        map.put(search['visitedMap'], w, {'marked':True,'edgeTo':edge,'distTo':distToW})
+        if minpq.contains(search['minpq'], w): 
+            minpq.decreasePriority(search['minpq'], w, distToW)
+        else:
+            minpq.insert(search['minpq'], w, distToW)
 
 def distTo(search, v):
     visited_v = map.get(search['visitedMap'], v)
     if visited_v==None:
-        return float('inf')
+        return math.inf
     return visited_v['value']['distTo']
 
 def hasPathTo(search, v):
-    return map.get(search['visitedMap'], v) != None
+    visited = map.get(search['visitedMap'], v)
+    if visited != None and visited['value']['marked']:
+        return True
+    return False
 
 def pathTo(search, v):
     if hasPathTo(search, v)==False:

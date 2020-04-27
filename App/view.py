@@ -76,8 +76,9 @@ def main():
             print("El grafo tiene: ", verticesNum," nodos y", edgesNum," enlaces")
         elif int(inputs[0])==3:
             vertices =input("Ingrese el vertice origen y destino\n")
-            lst = controller.getShortestPath(catalog,vertices)
-            print("El camino de menor costo entre los vertices es:",lst)
+            path = controller.getShortestPath(catalog,vertices)
+            print("El camino de menor costo entre los vertices es:",path)
+            # Recorrer la pila e imprimir el camino y la distancia
         else:
             sys.exit(0)
     sys.exit(0)
