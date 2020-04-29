@@ -24,6 +24,7 @@ import sys
 import controller 
 import csv
 from ADT import list as lt
+from ADT import stack as stk
 from ADT import orderedmap as map
 from DataStructures import listiterator as it
 
@@ -77,8 +78,13 @@ def main():
         elif int(inputs[0])==3:
             vertices =input("Ingrese el vertice origen y destino\n")
             path = controller.getShortestPath(catalog,vertices)
-            print("El camino de menor costo entre los vertices es:",path)
-            # Recorrer la pila e imprimir el camino y la distancia
+            print("El camino de menor costo entre los vertices es:")
+            totalDist = 0
+            while not stk.isEmpty (path): 
+                step = stk.pop(path)
+                totalDist += step['weight']
+                print (step['vertexA'] + "-->" + step['vertexB'] + " costo: " + str(step['weight']))
+            print ("Total: " + str (totalDist))
         else:
             sys.exit(0)
     sys.exit(0)

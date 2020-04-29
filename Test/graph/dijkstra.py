@@ -31,12 +31,9 @@ def newDijkstra(graph, s):
         v = minpq.delMin(pq)
         if not g.containsVertex(graph,v):
             raise Exception("Vertex ["+v+"] is not in the graph")
-        edges = g.adjacentEdges(graph, v)
-        if edges != None:
-            edges_iter = it.newIterator (edges)
-            while (it.hasNext(edges_iter)):
-                edge = it.next (edges_iter)
-                relax(search, edge)
+        # obtener los enlaces adjacentes de v
+        # Iterar sobre la lista de enlaces
+        # Relajar (relax) cada enlace
     return search
 
 
@@ -44,8 +41,8 @@ def relax(search, edge):
     v = e.either(edge)
     w = e.other(edge, v)
     visited_v = map.get(search['visitedMap'], v)['value']
-    visited_w = map.get(search['visitedMap'], w)
-    if visited_w is None or (visited_w['value']['distTo'] > visited_v['distTo'] + e.weight(edge)):
+    visited_w = map.get(search['visitedMap'], w)['value']
+    if visited_w['distTo'] > (visited_v['distTo'] + e.weight(edge)):
         distToW = visited_v['distTo'] + e.weight(edge)
         map.put(search['visitedMap'], w, {'marked':True,'edgeTo':edge,'distTo':distToW})
         if minpq.contains(search['minpq'], w): 
