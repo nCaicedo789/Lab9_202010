@@ -28,7 +28,6 @@ Estructura que contiene la información de una cola de prioridad indexada, orien
 
 def newMinHeap (capacity, cmpFunction):
   
-  #priorities = [0]*(capacity+1)
   pq = [None]*(capacity+1)
   qpMap = map.newMap(capacity,comparefunction=cmpFunction)
   minPQ = {'pq':pq, 'qpMap':qpMap, 'maxCapacity':capacity,'size':0, 'cmpFunction':cmpFunction}
@@ -59,8 +58,8 @@ def delMin(minPQ):
     exch(minPQ, 1, n)
     minPQ['size'] = n-1
     sink(minPQ, 1)
-    map.remove(minPQ['qpMap'],minIdx['index']) # delete
-    minPQ['pq'][n] = 0                         # not needed #Sedgewick uses index n+1, is it wrong?
+    map.remove(minPQ['qpMap'],minIdx['index'])
+    minPQ['pq'][n] = 0
     return minIdx['index']
     
 
@@ -72,8 +71,6 @@ def decreasePriority(minPQ, index, priority):
     elem['priority'] = priority
     minPQ['pq'][val['value']] = elem
     swim(minPQ, val['value']) 
-    # this operation can be generalized by ask new_prior > old_prior
-    # to do swim, sink or neither
 
 def increasePriority(minPQ, index, priority):
     val = map.get(minPQ['qpMap'],index)
@@ -92,9 +89,6 @@ def exch(minPQ, i, j):
     map.put(minPQ['qpMap'], element_i['index'], j)
     minPQ['pq'][j] = element_i
     map.put(minPQ['qpMap'], element_j['index'], i)
-    #minPQ['qp'][minPQ['pq'][i]] = i
-    #minPQ['qp'][minPQ['pq'][j]] = j
-
 
 def insert(minPQ, index, priority):
     if contains(minPQ, index):
@@ -103,7 +97,6 @@ def insert(minPQ, index, priority):
     minPQ['size']=n
     map.put(minPQ['qpMap'],index,n)
     minPQ['pq'][n] = {'index':index, 'priority':priority}
-    #minPQ['priorities'][i] = priority
     swim(minPQ, n)
 
 
