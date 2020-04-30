@@ -26,6 +26,7 @@ from ADT import graph as g
 from ADT import map as map
 from ADT import list as lt
 from DataStructures import listiterator as it
+from DataStructures import dijkstra as dj
 from datetime import datetime
 
 """
@@ -75,10 +76,22 @@ def getShortestPath (catalog, source, dst):
     Retorna el camino de menor costo entre vertice origen y destino, si existe 
     """
     print("vertices: ",source,", ",dst)
+    search=dj.newDijkstra(catalogo['librariesGraph'],source)
+    mapa= search['visitedMap']
+    lista=lt.newList()
+    camino= path(mapa,lista,source,dst)
     # ejecutar Dijkstra desde source
     # obtener el camino hasta dst
     # retornar el camino
-    return None
+    return camino
+
+def path(mapa,lista, source, dst):
+    if source == dst:
+        return lista
+    vertice= map.get(mapa, source)
+    anterior= vertice['edgeTo']
+    lt.addFirst(lista, anterior)
+    path(mapa,lista,anterior,dst)
     
 # Funciones de comparacion
 

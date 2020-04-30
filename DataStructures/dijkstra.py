@@ -9,9 +9,6 @@ from ADT import stack as stk
 import math
 
 
-def comparenames (searchname, element):
-    return (searchname == element['key'])
-
 def newDijkstra(graph, s):
     """
     Crea una busqueda Dijkstra para un digrafo y un vertice origen
@@ -54,60 +51,3 @@ def relax(search, edge):
             minpq.decreasePriority(search['minpq'], w, distToW)
         else:
             minpq.insert(search['minpq'], w, distToW)
-
-def distTo(search, v):
-    visited_v = map.get(search['visitedMap'], v)
-    if visited_v==None:
-        return math.inf
-    return visited_v['value']['distTo']
-
-def hasPathTo(search, v):
-    visited = map.get(search['visitedMap'], v)
-    if visited != None and visited['value']['marked']:
-        return True
-    return False
-
-def pathTo(search, v):
-    if hasPathTo(search, v)==False:
-        return None
-    path = stk.newStack()
-    while v != search['s']:
-        visited_v = map.get(search['visitedMap'],v)['value']
-        edge = visited_v['edgeTo']
-        stk.push(path, edge)
-        v = e.either(edge)
-    return path
-
-# Function to return the smallest  
-# prime number greater than N 
-# # This code is contributed by Sanjit_Prasad  
-
-def isPrime(n):
-    # Corner cases  
-    if(n <= 1): 
-        return False
-    if(n <= 3): 
-        return True
-    # This is checked so that we can skip  
-    # middle five numbers in below loop  
-    if(n % 2 == 0 or n % 3 == 0): 
-        return False
-    for i in range(5,int(math.sqrt(n) + 1), 6):  
-        if(n % i == 0 or n % (i + 2) == 0): 
-            return False
-    return True
-
-def nextPrime(N): 
-    # Base case  
-    if (N <= 1): 
-        return 2
-    prime = N 
-    found = False
-    # Loop continuously until isPrime returns  
-    # True for a number greater than n  
-    while(not found): 
-        prime = prime + 1
-        if(isPrime(prime) == True): 
-            found = True
-    return prime 
-
