@@ -44,6 +44,8 @@ def printMenu():
     print("1- Cargar información")
     print("2- Contar nodos y enlances cargados ")
     print("3- Obtener el camino de menor costo entre dos vértices usando Dijkstra (origen destino)")
+    print("4- Contar componentes conectados")
+    print("5- Camino entre vértices")
     print("0- Salir")
 
 
@@ -85,6 +87,14 @@ def main():
                 totalDist += step['weight']
                 print (step['vertexA'] + "-->" + step['vertexB'] + " costo: " + str(step['weight']))
             print ("Total: " + str (totalDist))
+
+        elif int(inputs[0])==4:
+            ccs = controller.countConnectedComponents(catalog)
+            print("El grafo tiene :", ccs, 'componentes conectados')
+        elif int(inputs[0])==5:
+            vertices =input("Ingrese el vertice origen y destino\n")
+            lst = controller.getPath(catalog,vertices)
+            print("El camino entre los vertices es:",lst)
         else:
             sys.exit(0)
     sys.exit(0)

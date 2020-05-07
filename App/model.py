@@ -27,6 +27,7 @@ from ADT import map as map
 from ADT import list as lt
 from DataStructures import listiterator as it
 from DataStructures import dijkstra as dj
+from DataStructures import Dfs_Bfs as dbs
 from datetime import datetime
 
 """
@@ -42,7 +43,12 @@ def newCatalog():
     Inicializa el catálogo y retorna el catalogo inicializado.
     """
     libgraph = g.newGraph(7235,compareByKey,directed=True)
-    catalog = {'librariesGraph':libgraph}    
+    rgraph = g.newGraph(111353,compareByKey)
+    prime = 111353 * 2
+    marcas_dfs= map.newMap(11000, maptype='PROBING',comparefunction=compareByKey)
+    path_dfs=lt.newList()
+    catalog = {'librariesGraph':libgraph, 'delayGraph':rgraph, 'visitedMap':None, 'marcas_dfs':marcas_dfs, 'marcas_bfs':None, 'path_dfs':path_dfs}
+    catalog['visitedMap'] = map.newMap(prime, maptype='PROBING',comparefunction=compareByKey)    
     return catalog
 
 
@@ -76,7 +82,7 @@ def getShortestPath (catalog, source, dst):
     Retorna el camino de menor costo entre vertice origen y destino, si existe 
     """
     print("vertices: ",source,", ",dst)
-    search=dj.newDijkstra(catalogo['librariesGraph'],source)
+    search=dj.newDijkstra(catalog['librariesGraph'],source)
     mapa= search['visitedMap']
     lista=lt.newList()
     camino= path(mapa,lista,source,dst)
@@ -98,3 +104,49 @@ def path(mapa,lista, source, dst):
 def compareByKey (key, element):
     return  (key == element['key'] )  
 
+
+def depth_first_search(catalog,node):
+    valor={'nodo':node, 'stado':True, 'predecesor':None}
+    map.put(catalog['visitedMap'],valor['nodo'],valor)
+    list_ad=g.adjacents(catalog['delayGraph'],node)
+    for i in range (1,lt.size(list_ad)+1):
+        li_node=lt.getElement(list_ad,i)
+        if not map.contains(catalog['visitedMap'],li_node):
+            record={'nodo':li_node, 'stado':True, 'predecesor':node}
+            map.put(catalog['visitedMap'],record['nodo'],record)
+            depth_first_search(catalog,li_node)
+
+def countConnectedComponents (catalog):
+    """
+    Retorna la cantidad de componentes conectados del grafo de revisiones
+    """
+    counter=0
+    list_nodes=g.vertices(catalog['delayGraph'])
+    total= g.numVertex(catalog['delayGraph'])
+    for i in range(1,lt.size(list_nodes)+1):
+        node=lt.getElement(list_nodes,i)
+        if not map.contains(catalog['visitedMap'],node):
+            depth_first_search(catalog,node)
+            counter+=1
+        sub_total=map.size(catalog['visitedMap'])
+        if sub_total==total:
+            break
+    return counter
+
+def getPath (catalog, source, dst):
+    """
+    Retorna el camino, si existe, entre vertice origen y destino
+    """
+    mapa= catalog['marcas_dfs']
+    grafo= catalog['reviewGraph']
+    path= catalog['path_dfs']
+    if dst==source:
+        return path
+    if map.size(mapa)==0:
+        dbs.depth_first_search(grafo,mapa,source)
+
+    nod_bus =map.get(mapa, dst)
+    if nod_bus != None:
+        new_node= nod_bus['predecesor']
+        lt.addFirst(path,new_node)
+        getPath(catalog,source,new_node)

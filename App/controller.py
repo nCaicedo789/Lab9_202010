@@ -102,3 +102,18 @@ def getShortestPath(catalog, vertices):
     print("Tiempo de ejecución de dijkstra: ",t1_stop-t1_start," segundos")
     return path
 
+def countConnectedComponents(catalog):
+    t1_start = process_time() #tiempo inicial
+    ccs = model.countConnectedComponents(catalog) 
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución de conteo de componentes conectados:",t1_stop-t1_start," segundos")
+    return ccs
+
+def getPath(catalog, vertices):
+    t1_start = process_time() #tiempo inicial
+    source=vertices.split(" ")[0]
+    dst=vertices.split(" ")[1]
+    path = model.getPath(catalog, source, dst)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución de dfs",t1_stop-t1_start," segundos")
+    return path
