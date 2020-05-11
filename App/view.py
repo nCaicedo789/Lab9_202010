@@ -45,7 +45,8 @@ def printMenu():
     print("2- Contar nodos y enlances cargados ")
     print("3- Obtener el camino de menor costo entre dos vértices usando Dijkstra (origen destino)")
     print("4- Contar componentes conectados")
-    print("5- Camino entre vértices")
+    print("5- Camino entre vértices con dfs")
+    print('6-camino mas corto bfs')
     print("0- Salir")
 
 
@@ -94,6 +95,10 @@ def main():
         elif int(inputs[0])==5:
             vertices =input("Ingrese el vertice origen y destino\n")
             lst = controller.getPath(catalog,vertices)
+            print("El camino entre los vertices es:",lst)
+        elif int(inputs[0])==6:
+            vertices =input("Ingrese el vertice origen y destino\n")
+            lst = controller.Path_samll(catalog,vertices)
             print("El camino entre los vertices es:",lst)
         else:
             sys.exit(0)
