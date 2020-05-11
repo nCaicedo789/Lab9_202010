@@ -32,7 +32,7 @@ def newDijkstra(graph, s):
         v_list=g.adjacentEdges(v)
         for i in range(1, lt.size(v_list)+1):
             enlace= lt.getElement(v_list,i)
-            relax(search, enalace)
+            relax(search, enlace)
         # obtener los enlaces adjacentes de v
         # Iterar sobre la lista de enlaces
         # Relajar (relax) cada enlace
