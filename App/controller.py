@@ -54,7 +54,7 @@ def loadLibraries (catalog, sep=','):
     Por cada para de bibliotecas, se almacena la distancia en kilometros entre ellas.
     """
     t1_start = process_time() #tiempo inicial
-    libsFile = cf.data_dir + 'GoodReads/libraries_edges.csv'
+    libsFile = cf.data_dir + 'GoodReads/flights_edges.csv'
     dialect = csv.excel()
     dialect.delimiter=sep
     with open(libsFile, encoding="utf-8-sig") as csvfile:
@@ -114,6 +114,15 @@ def getPath(catalog, vertices):
     source=vertices.split(" ")[0]
     dst=vertices.split(" ")[1]
     path = model.getPath(catalog, source, dst)
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución de dfs",t1_stop-t1_start," segundos")
+    return path
+
+def Path_samll(catalog, vertices):
+    t1_start = process_time() #tiempo inicial
+    source=vertices.split(" ")[0]
+    dst=vertices.split(" ")[1]
+    path = model.path_small(catalog, source, dst)
     t1_stop = process_time() #tiempo final
     print("Tiempo de ejecución de dfs",t1_stop-t1_start," segundos")
     return path

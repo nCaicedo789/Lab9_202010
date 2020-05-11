@@ -26,8 +26,8 @@ from ADT import graph as g
 from ADT import map as map
 from ADT import list as lt
 from DataStructures import listiterator as it
-from DataStructures import dijkstra as dj
 from DataStructures import Dfs_Bfs as dbs
+from DataStructures import dijkstra as dj
 from datetime import datetime
 
 """
@@ -56,16 +56,21 @@ def addLibraryNode (catalog, row):
     """
     Adiciona un nodo para almacenar una biblioteca
     """
-    if not g.containsVertex(catalog['librariesGraph'], row['ID_src']):
-        g.insertVertex (catalog['librariesGraph'], row['ID_src'])
-    if not g.containsVertex(catalog['librariesGraph'], row['ID_dst']):
-        g.insertVertex (catalog['librariesGraph'], row['ID_dst'])
+    if not g.containsVertex(catalog['librariesGraph'], row['SOURCE']):
+        g.insertVertex (catalog['librariesGraph'], row['SOURCE'])
+    if not g.containsVertex(catalog['librariesGraph'], row['DEST']):
+        g.insertVertex (catalog['librariesGraph'], row['DEST'])
+    if not g.containsVertex(catalog['delayGraph'], row['SOURCE']):
+        g.insertVertex (catalog['delayGraph'], row['SOURCE'])
+    if not g.containsVertex(catalog['delayGraph'], row['DEST']):
+        g.insertVertex (catalog['delayGraph'], row['DEST'])
 
 def addLibraryEdge  (catalog, row):
     """
     Adiciona un enlace entre bibliotecas
     """
-    g.addEdge (catalog['librariesGraph'], row['ID_src'], row['ID_dst'], float(row['dist']))
+    g.addEdge (catalog['librariesGraph'], row['SOURCE'], row['DEST'], float(row['ARRIVAL_DELAY']))
+    g.addEdge (catalog['delayGraph'], row['SOURCE'], row['DEST'])
 
 
 def countNodesEdges (catalog):
@@ -81,8 +86,7 @@ def getShortestPath (catalog, source, dst):
     """
     Retorna el camino de menor costo entre vertice origen y destino, si existe 
     """
-    print("vertices: ",source,", ",dst)
-    search=dj.newDijkstra(catalog['librariesGraph'],source)
+    search=dj.newDijkstra(catalogo['librariesGraph'],source)
     mapa= search['visitedMap']
     lista=lt.newList()
     camino= path(mapa,lista,source,dst)
@@ -150,3 +154,23 @@ def getPath (catalog, source, dst):
         new_node= nod_bus['predecesor']
         lt.addFirst(path,new_node)
         getPath(catalog,source,new_node)
+
+    def carga_bfs(catalog, source):
+    search= dbs.newBFS(catalog['reviewGraph'], source)
+    catalog['marcas_bfs']= search['visitedMap']
+
+def path_small(catalog, source, dst):
+
+    mapa= catalog['marcas_bfs']
+    path= catalog['path_bfs']
+    if dst==source:
+        return path
+    if mapa == None:
+        carga_bfs(catalog, source)
+    nod_bus=map.get(mapa, dst) 
+    if nod_bus != None:
+        new_node= nod_bus['predecesor']
+        lt.addFirst(path,new_node)
+        path_small(catalog,source,new_node)
+    else:
+        return None
